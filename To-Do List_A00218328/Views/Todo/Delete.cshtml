@@ -1,0 +1,20 @@
+﻿@model To_Do_List_A00218328.Models.TodoItem
+@{
+    ViewData["Title"] = "Delete";
+}
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>      
+    </dl>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="TodoItemId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-controller="Home" asp-action="Index">Back to List</a>
+    </form>
+</div>

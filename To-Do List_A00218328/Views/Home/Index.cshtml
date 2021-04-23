@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>
+        Hi @(!string.IsNullOrEmpty(User.Identity.Name)? User.Identity.Name:"")
+
+    </p>
+</div>
+@model IEnumerable<To_Do_List_A00218328.Models.TodoItem>
+@{
+
+}
+<script>
+    if (!navigator.onLine) {
+        $('.remove-at-offline').addClass('hidden')
+    }
+    else {
+        $('.remove-at-offline').removeClass('hidden')
+    }
+</script>
+@if (User.Identity.IsAuthenticated && !string.IsNullOrEmpty(User.Identity.Name))
+{
+    <p>
+        <a class="btn btn-primary remove-at-offline" asp-controller="Todo" asp-action="Create">Create Task</a>
+    </p>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Todo Completed</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered  table-striped">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DoneDate)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(a => a.Done == true && a.DoneDate.HasValue && DateTime.Now.Subtract(a.DoneDate.Value).Days <= 1))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => item.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+
+                                <td>
+                                    <span> @(item.DoneDate.HasValue? item.DoneDate.Value.ToString():"")</span>
+                                </td>
+                                <td class="remove-at-offline">
+                                    <a class="btn btn-sm btn-info" asp-controller="Todo" asp-action="Edit" asp-route-id="@item.TodoItemId">Edit</a>
+                                    <a class="btn btn-sm btn-danger" asp-controller="Todo" asp-action="Delete" asp-route-id="@item.TodoItemId">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <h2>Todo Due</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered  table-striped">
+                    <thead class="table-danger">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Title)
+
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.DueDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(a => a.Done != true && a.DueDate.HasValue && a.DueDate.Value.Subtract(DateTime.Now).Days <= 1))
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(model => item.Title)
+                                </td>
+                                <td>
+                                    <span> @(item.DueDate.HasValue? item.DueDate.Value.ToString():"")</span>
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td class="remove-at-offline">
+                                    <a class="btn btn-sm btn-info" asp-controller="Todo" asp-action="Edit" asp-route-id="@item.TodoItemId">Edit</a>
+                                    <a class="btn btn-sm btn-danger" asp-controller="Todo" asp-action="Delete" asp-route-id="@item.TodoItemId">Delete</a>
+                                    <a class="btn btn-success" href="/Todo/DoneTodo?TodoId=@item.TodoItemId">Done</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        /*  $(document).read(function () {*/
+                                    //window.location.href = '/Todo/Index'
+                                //})
+    </script>
+}
+else
+{
+    <br>
+    <p class="intro-text">
+        Welcome to Todo list Site!   <br>     
+        Here you can create your new tasks <br>
+        but to create new tasks you should login first. Then you can create tasks..<br>
+        You can edit your todo items ...and delete  them as well.<br>
+        And you can mark them as complete by clicking "done" button 
+
+
+    </p>
+}
+<script src="~/js/site.js" asp-append-version="true"></script>
